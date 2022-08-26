@@ -1,5 +1,3 @@
-// Copyright 2018-2020 The HuggingFace Inc. team.
-// Copyright 2020 Marian Team Authors
 // Copyright 2019-2020 Guillaume Becquin
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,106 +28,223 @@ use std::fmt::{Debug, Display};
 /// Language
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Serialize, Deserialize)]
 pub enum Language {
-    Afrikaans,
-    Danish,
-    Dutch,
-    German,
-    English,
-    Icelandic,
-    Luxembourgish,
-    Norwegian,
-    Swedish,
-    WesternFrisian,
-    Yiddish,
-    Asturian,
-    Catalan,
-    French,
-    Galician,
-    Italian,
-    Occitan,
-    Portuguese,
-    Romanian,
-    Spanish,
-    Belarusian,
-    Bosnian,
-    Bulgarian,
-    Croatian,
-    Czech,
-    Macedonian,
-    Polish,
-    Russian,
-    Serbian,
-    Slovak,
-    Slovenian,
-    Ukrainian,
-    Estonian,
-    Finnish,
-    Hungarian,
-    Latvian,
-    Lithuanian,
-    Albanian,
-    Armenian,
-    Georgian,
-    Greek,
-    Breton,
-    Irish,
-    ScottishGaelic,
-    Welsh,
-    Azerbaijani,
-    Bashkir,
-    Kazakh,
-    Turkish,
-    Uzbek,
-    Japanese,
-    Korean,
-    Vietnamese,
-    ChineseMandarin,
-    Bengali,
-    Gujarati,
-    Hindi,
-    Kannada,
-    Marathi,
-    Nepali,
-    Oriya,
-    Panjabi,
-    Sindhi,
-    Sinhala,
-    Urdu,
-    Tamil,
-    Cebuano,
-    Iloko,
-    Indonesian,
-    Javanese,
-    Malagasy,
-    Malay,
-    Malayalam,
-    Sundanese,
-    Tagalog,
-    Burmese,
-    CentralKhmer,
-    Lao,
-    Thai,
-    Mongolian,
-    Arabic,
-    Hebrew,
-    Pashto,
+    Latvian,               // lv lav
+    Achinese,              // ace
+    MesopotamianArabic,    // acm
+    TaizziAdeniArabic,     // acq
+    TunisianArabic,        // aeb
+    Afrikaans,             // afr af
+    SouthLevantineArabic,  // ajp
+    Akan,                  // aka ak
+    ToskAlbanian,          // als
+    Amharic,               // amh am
+    NorthLevantineArabic,  // apc
+    StandardArabic,        // arb
+    NajdiArabic,           // ars
+    MoroccanArabic,        // ary
+    EgyptianArabic,        // arz
+    Assamese,              // asm as
+    Asturian,              // ast
+    Awadhi,                // awa
+    CentralAymara,         // ayr
+    SouthAzerbaijani,      // azb
+    NorthAzerbaijani,      // azj
+    Bashkir,               // bak ba
+    Bambara,               // bam bm
+    Balinese,              // ban
+    Belarusian,            // bel be
+    Bemba,                 // bem
+    Bengali,               // ben bn
+    Bhojpuri,              // bho
+    Banjar,                // bjn
+    Tibetan,               // bod bo
+    Bosnian,               // bos bs
+    Buginese,              // bug
+    Bulgarian,             // bul bg
+    Catalan,               // cat ca
+    Cebuano,               // ceb
+    Czech,                 // ces cs
+    Chokwe,                // cjk
+    CentralKurdish,        // ckb
+    CrimeanTatar,          // crh
+    Welsh,                 // cym cy
+    Danish,                // dan da
+    German,                // deu de
+    SouthwesternDinka,     // dik
+    Dyula,                 // dyu
+    Dzongkha,              // dzo dz
+    Greek,                 // ell el
+    English,               // eng en
+    Esperanto,             // epo eo
+    Estonian,              // est et
+    Basque,                // eus eu
+    Ewe,                   // ewe ee
+    Faroese,               // fao fo
+    Fijian,                // fij fj
+    Finnish,               // fin fi
+    Fon,                   // fon
+    French,                // fra fr
+    Friulian,              // fur
+    NigerianFulfulde,      // fuv
+    WestCentralOromo,      // gaz
+    ScottishGaelic,        // gla gd
+    Irish,                 // gle ga
+    Galician,              // glg gl
+    Guarani,               // grn gn
+    Gujarati,              // guj gu
+    Haitian,               // hat ht
+    Hausa,                 // hau ha
+    Hebrew,                // heb he
+    Hindi,                 // hin hi
+    Chhattisgarhi,         // hne
+    Croatian,              // hrv hr
+    Hungarian,             // hun hu
+    Armenian,              // hye hy
+    Igbo,                  // ibo ig
+    Iloko,                 // ilo
+    Indonesian,            // ind id
+    Icelandic,             // isl is
+    Italian,               // ita it
+    Javanese,              // jav jv
+    Japanese,              // jpn ja
+    Kabyle,                // kab
+    Kachin,                // kac
+    Kamba,                 // kam
+    Kannada,               // kan kn
+    Kashmiri,              // kas ks
+    Georgian,              // kat ka
+    Kazakh,                // kaz kk
+    Kabiye,                // kbp
+    Kabuverdianu,          // kea
+    HalhMongolian,         // khk
+    Khmer,                 // khm km
+    Kikuyu,                // kik ki
+    Kinyarwanda,           // kin rw
+    Kirghiz,               // kir ky
+    Kimbundu,              // kmb
+    NorthernKurdish,       // kmr
+    CentralKanuri,         // knc
+    Kongo,                 // kon kg
+    Korean,                // kor ko
+    Lao,                   // lao lo
+    Ligurian,              // lij
+    Limburgan,             // lim li
+    Lingala,               // lin ln
+    Lithuanian,            // lit lt
+    Lombard,               // lmo
+    Latgalian,             // ltg
+    Luxembourgish,         // ltz lb
+    LubaLulua,             // lua
+    Ganda,                 // lug lg
+    Luo,                   // luo
+    Lushai,                // lus
+    StandardLatvian,       // lvs
+    Magahi,                // mag
+    Maithili,              // mai
+    Malayalam,             // mal ml
+    Marathi,               // mar mr
+    Minangkabau,           // min
+    Macedonian,            // mkd mk
+    Maltese,               // mlt mt
+    Manipuri,              // mni
+    Mossi,                 // mos
+    Maori,                 // mri mi
+    Burmese,               // mya my
+    Dutch,                 // nld nl
+    Norwegian,             // no
+    NorwegianNynorsk,      // nno nn
+    NorwegianBokmal,       // nob nb
+    Nepali,                // npi
+    Pedi,                  // nso
+    Nuer,                  // nus
+    Nyanja,                // nya ny
+    Occitan,               // oci oc
+    Odia,                  // ory
+    Pangasinan,            // pag
+    Panjabi,               // pan pa
+    Papiamento,            // pap
+    SouthernPashto,        // pbt
+    IranianPersian,        // pes
+    PlateauMalagasy,       // plt
+    Polish,                // pol pl
+    Portuguese,            // por pt
+    Dari,                  // prs
+    AyacuchoQuechua,       // quy
+    Romanian,              // ron ro
+    Rundi,                 // run rn
+    Russian,               // rus ru
+    Sango,                 // sag sg
+    Sanskrit,              // san sa
+    Santali,               // sat
+    Sicilian,              // scn
+    Shan,                  // shn
+    Sinhala,               // sin si
+    Slovak,                // slk sk
+    Slovenian,             // slv sl
+    Samoan,                // smo sm
+    Shona,                 // sna sn
+    Sindhi,                // snd sd
+    Somali,                // som so
+    SouthernSotho,         // sot st
+    Spanish,               // spa es
+    Sardinian,             // srd sc
+    Serbian,               // srp sr
+    Swati,                 // ssw ss
+    Sundanese,             // sun su
+    Swedish,               // swe sv
+    Swahili,               // swh
+    Silesian,              // szl
+    Tamil,                 // tam ta
+    Tamasheq,              // taq
+    Tatar,                 // tat tt
+    Telugu,                // tel te
+    Tajik,                 // tgk tg
+    Tagalog,               // tgl tl
+    Thai,                  // tha th
+    Tigrinya,              // tir ti
+    TokPisin,              // tpi
+    Tswana,                // tsn tn
+    Tsonga,                // tso ts
+    Turkmen,               // tuk tk
+    Tumbuka,               // tum
+    Turkish,               // tur tr
+    Twi,                   // twi tw
+    CentralAtlasTamazight, // tzm
+    Uighur,                // uig ug
+    Ukrainian,             // ukr uk
+    Umbundu,               // umb
+    Urdu,                  // urd ur
+    NorthernUzbek,         // uzn
+    Venetian,              // vec
+    Vietnamese,            // vie vi
+    Waray,                 // war
+    Wolof,                 // wol wo
+    Xhosa,                 // xho xh
+    EasternYiddish,        // ydd
+    Yoruba,                // yor yo
+    YueChinese,            // yue
+    Chinese,               // zho zh
+    StandardMalay,         // zsm
+    Zulu,                  // zul zu
+    WesternFrisian,        // fy
+    Arabic,                // ara ar
+    Mongolian,             // mn
+    Yiddish,               // yid yi
+    Pashto,                // ps
     Farsi,
-    Amharic,
     Fulah,
-    Hausa,
-    Igbo,
-    Lingala,
-    Luganda,
+    Uzbek,
+    Malagasy,
+    Albanian,
+    Breton,
+    Malay,
+    Oriya,
     NorthernSotho,
-    Somali,
-    Swahili,
-    Swati,
-    Tswana,
-    Wolof,
-    Xhosa,
-    Yoruba,
-    Zulu,
+    Luganda,
+    Azerbaijani,
+    ChineseMandarin,
     HaitianCreole,
+    CentralKhmer,
 }
 
 impl Display for Language {
@@ -156,8 +271,8 @@ impl Display for Language {
 }
 
 impl Language {
-    pub fn get_iso_639_1_code(&self) -> &'static str {
-        match self {
+    pub fn get_iso_639_1_code(&self) -> Option<&'static str> {
+        let code = match self {
             Language::Afrikaans => "af",
             Language::Danish => "da",
             Language::Dutch => "nl",
@@ -193,9 +308,9 @@ impl Language {
             Language::Estonian => "et",
             Language::Finnish => "fi",
             Language::Hungarian => "hu",
-            Language::Latvian => "lv",
+            Language::StandardLatvian => "lv",
             Language::Lithuanian => "lt",
-            Language::Albanian => "sq",
+            Language::ToskAlbanian => "sq",
             Language::Armenian => "hy",
             Language::Georgian => "ka",
             Language::Greek => "el",
@@ -203,15 +318,16 @@ impl Language {
             Language::Irish => "ga",
             Language::ScottishGaelic => "gd",
             Language::Welsh => "cy",
-            Language::Azerbaijani => "az",
+            Language::NorthAzerbaijani => "az",
             Language::Bashkir => "ba",
             Language::Kazakh => "kk",
             Language::Turkish => "tr",
             Language::Uzbek => "uz",
+            Language::NorthernUzbek => "uzn",
             Language::Japanese => "ja",
             Language::Korean => "ko",
             Language::Vietnamese => "vi",
-            Language::ChineseMandarin => "zh",
+            Language::Chinese => "zh",
             Language::Bengali => "bn",
             Language::Gujarati => "gu",
             Language::Hindi => "hi",
@@ -229,19 +345,22 @@ impl Language {
             Language::Indonesian => "id",
             Language::Javanese => "jv",
             Language::Malagasy => "mg",
+            Language::PlateauMalagasy => return None,
             Language::Malay => "ms",
             Language::Malayalam => "ml",
             Language::Sundanese => "su",
             Language::Tagalog => "tl",
             Language::Burmese => "my",
-            Language::CentralKhmer => "km",
+            Language::Khmer => "km",
             Language::Lao => "lo",
             Language::Thai => "th",
             Language::Mongolian => "mn",
-            Language::Arabic => "ar",
+            Language::NajdiArabic => "ar",
             Language::Hebrew => "he",
+            Language::SouthernPashto => "ps",
             Language::Pashto => "ps",
             Language::Farsi => "fa",
+            Language::Faroese => "fo",
             Language::Amharic => "am",
             Language::Fulah => "ff",
             Language::Hausa => "ha",
@@ -257,8 +376,123 @@ impl Language {
             Language::Xhosa => "xh",
             Language::Yoruba => "yo",
             Language::Zulu => "zu",
+            Language::Haitian => "ht",
+            Language::Latvian => "lv",
+            Language::Achinese => return None,
+            Language::MesopotamianArabic => return None,
+            Language::TaizziAdeniArabic => return None,
+            Language::TunisianArabic => return None,
+            Language::SouthLevantineArabic => return None,
+            Language::Akan => "ak",
+            Language::NorthLevantineArabic => return None,
+            Language::StandardArabic => return None,
+            Language::MoroccanArabic => return None,
+            Language::EgyptianArabic => return None,
+            Language::Assamese => "as",
+            Language::Awadhi => return None,
+            Language::CentralAymara => return None,
+            Language::SouthAzerbaijani => return None,
+            Language::Bambara => "bm",
+            Language::Balinese => return None,
+            Language::Bemba => return None,
+            Language::Bhojpuri => return None,
+            Language::Banjar => return None,
+            Language::Tibetan => "bo",
+            Language::Buginese => return None,
+            Language::Chokwe => return None,
+            Language::CentralKurdish => return None,
+            Language::CrimeanTatar => return None,
+            Language::SouthwesternDinka => return None,
+            Language::Dyula => return None,
+            Language::Dzongkha => "dz",
+            Language::Esperanto => "eo",
+            Language::Basque => "eu",
+            Language::Ewe => "ee",
+            Language::Fijian => "fi",
+            Language::Fon => return None,
+            Language::Friulian => return None,
+            Language::NigerianFulfulde => return None,
+            Language::WestCentralOromo => return None,
+            Language::Guarani => "gn",
+            Language::Chhattisgarhi => return None,
+            Language::Kabyle => return None,
+            Language::Kachin => return None,
+            Language::Kamba => return None,
+            Language::Kashmiri => "ks",
+            Language::Kabiye => return None,
+            Language::Kabuverdianu => return None,
+            Language::HalhMongolian => return None,
+            Language::Kikuyu => "ki",
+            Language::Kinyarwanda => "rw",
+            Language::Kirghiz => "ky",
+            Language::Kimbundu => return None,
+            Language::NorthernKurdish => return None,
+            Language::CentralKanuri => return None,
+            Language::Kongo => "kg",
+            Language::Ligurian => return None,
+            Language::Limburgan => "li",
+            Language::Lombard => return None,
+            Language::Latgalian => return None,
+            Language::LubaLulua => return None,
+            Language::Ganda => "lg",
+            Language::Luo => return None,
+            Language::Lushai => return None,
+            Language::Magahi => return None,
+            Language::Maithili => return None,
+            Language::Minangkabau => return None,
+            Language::Maltese => "mt",
+            Language::Manipuri => return None,
+            Language::Mossi => return None,
+            Language::Maori => "mi",
+            Language::NorwegianNynorsk => "nn",
+            Language::NorwegianBokmal => "nb",
+            Language::Pedi => return None,
+            Language::Nuer => return None,
+            Language::Nyanja => "ny",
+            Language::Odia => return None,
+            Language::Pangasinan => return None,
+            Language::Papiamento => return None,
+            Language::IranianPersian => return None,
+            Language::Dari => return None,
+            Language::AyacuchoQuechua => return None,
+            Language::Rundi => "rn",
+            Language::Sango => "sg",
+            Language::Sanskrit => return None,
+            Language::Santali => return None,
+            Language::Sicilian => return None,
+            Language::Shan => return None,
+            Language::Samoan => "sm",
+            Language::Shona => "sn",
+            Language::SouthernSotho => "st",
+            Language::Sardinian => "sc",
+            Language::Silesian => return None,
+            Language::Tamasheq => return None,
+            Language::Tatar => "tt",
+            Language::Telugu => "te",
+            Language::Tajik => "tg",
+            Language::Tigrinya => "ti",
+            Language::TokPisin => return None,
+            Language::Tsonga => "ts",
+            Language::Turkmen => "tk",
+            Language::Tumbuka => return None,
+            Language::Twi => "tw",
+            Language::CentralAtlasTamazight => return None,
+            Language::Uighur => "ug",
+            Language::Umbundu => return None,
+            Language::Venetian => return None,
+            Language::Waray => return None,
+            Language::EasternYiddish => return None,
+            Language::YueChinese => return None,
+            Language::StandardMalay => return None,
+            Language::Arabic => "ar",
+            Language::Albanian => "sq",
+            Language::Azerbaijani => "az",
+            Language::ChineseMandarin => return None,
             Language::HaitianCreole => "ht",
-        }
+            Language::CentralKhmer => "km",
+        };
+
+        Some(code)
     }
 
     pub fn get_iso_639_3_code(&self) -> &'static str {
@@ -299,8 +533,10 @@ impl Language {
             Language::Finnish => "fin",
             Language::Hungarian => "hun",
             Language::Latvian => "lav",
+            Language::StandardLatvian => "lvs",
             Language::Lithuanian => "lit",
             Language::Albanian => "sqi",
+            Language::ToskAlbanian => "als",
             Language::Armenian => "hye",
             Language::Georgian => "kat",
             Language::Greek => "ell",
@@ -363,6 +599,121 @@ impl Language {
             Language::Yoruba => "yor",
             Language::Zulu => "zul",
             Language::HaitianCreole => "hat",
+            Language::Achinese => "ace",
+            Language::MesopotamianArabic => "acm",
+            Language::TaizziAdeniArabic => "acq",
+            Language::TunisianArabic => "aeb",
+            Language::SouthLevantineArabic => "ajp",
+            Language::Akan => "aka",
+            Language::NorthLevantineArabic => "apc",
+            Language::StandardArabic => "arb",
+            Language::NajdiArabic => "ars",
+            Language::MoroccanArabic => "ary",
+            Language::EgyptianArabic => "arz",
+            Language::Assamese => "asm",
+            Language::Awadhi => "awa",
+            Language::CentralAymara => "ayr",
+            Language::SouthAzerbaijani => "azb",
+            Language::NorthAzerbaijani => "azj",
+            Language::Bambara => "bam",
+            Language::Balinese => "ban",
+            Language::Bemba => "bem",
+            Language::Bhojpuri => "bho",
+            Language::Banjar => "bjn",
+            Language::Tibetan => "bod",
+            Language::Buginese => "bug",
+            Language::Chokwe => "cjk",
+            Language::CentralKurdish => "ckb",
+            Language::CrimeanTatar => "crh",
+            Language::SouthwesternDinka => "dik",
+            Language::Dyula => "dyu",
+            Language::Dzongkha => "dzo",
+            Language::Esperanto => "epo",
+            Language::Basque => "eus",
+            Language::Ewe => "ewe",
+            Language::Faroese => "fao",
+            Language::Fijian => "fij",
+            Language::Fon => "fon",
+            Language::Friulian => "fur",
+            Language::NigerianFulfulde => "fuv",
+            Language::WestCentralOromo => "gaz",
+            Language::Guarani => "grn",
+            Language::Haitian => "hat",
+            Language::Chhattisgarhi => "hne",
+            Language::Kabyle => "kab",
+            Language::Kachin => "kac",
+            Language::Kamba => "kam",
+            Language::Kashmiri => "kas",
+            Language::Kabiye => "kbp",
+            Language::Kabuverdianu => "kea",
+            Language::HalhMongolian => "khk",
+            Language::Khmer => "khm",
+            Language::Kikuyu => "kik",
+            Language::Kinyarwanda => "kin",
+            Language::Kirghiz => "kir",
+            Language::Kimbundu => "kmb",
+            Language::NorthernKurdish => "kmr",
+            Language::CentralKanuri => "knc",
+            Language::Kongo => "kon",
+            Language::Ligurian => "lij",
+            Language::Limburgan => "lim",
+            Language::Lombard => "lmo",
+            Language::Latgalian => "ltg",
+            Language::LubaLulua => "lua",
+            Language::Ganda => "lug",
+            Language::Luo => "luo",
+            Language::Lushai => "lus",
+            Language::Magahi => "mag",
+            Language::Maithili => "mai",
+            Language::Minangkabau => "min",
+            Language::Maltese => "mlt",
+            Language::Manipuri => "mni",
+            Language::Mossi => "mos",
+            Language::Maori => "mri",
+            Language::NorwegianNynorsk => "nno",
+            Language::NorwegianBokmal => "nob",
+            Language::Pedi => "nso",
+            Language::Nuer => "nus",
+            Language::Nyanja => "nya",
+            Language::Odia => "ory",
+            Language::Pangasinan => "pag",
+            Language::Papiamento => "pap",
+            Language::SouthernPashto => "pbt",
+            Language::IranianPersian => "pes",
+            Language::PlateauMalagasy => "plt",
+            Language::Dari => "prs",
+            Language::AyacuchoQuechua => "quy",
+            Language::Rundi => "run",
+            Language::Sango => "sag",
+            Language::Sanskrit => "san",
+            Language::Santali => "sat",
+            Language::Sicilian => "scn",
+            Language::Shan => "shn",
+            Language::Samoan => "smo",
+            Language::Shona => "sna",
+            Language::SouthernSotho => "sot",
+            Language::Sardinian => "srd",
+            Language::Silesian => "szl",
+            Language::Tamasheq => "taq",
+            Language::Tatar => "tat",
+            Language::Telugu => "tel",
+            Language::Tajik => "tgk",
+            Language::Tigrinya => "tir",
+            Language::TokPisin => "tpi",
+            Language::Tsonga => "tso",
+            Language::Turkmen => "tuk",
+            Language::Tumbuka => "tum",
+            Language::Twi => "twi",
+            Language::CentralAtlasTamazight => "tzm",
+            Language::Uighur => "uig",
+            Language::Umbundu => "umb",
+            Language::NorthernUzbek => "uzn",
+            Language::Venetian => "vec",
+            Language::Waray => "war",
+            Language::EasternYiddish => "ydd",
+            Language::YueChinese => "yue",
+            Language::Chinese => "zho",
+            Language::StandardMalay => "zsm",
         }
     }
 }
@@ -602,8 +953,8 @@ impl TranslationOption {
                     (
                         Some(format!(
                             ">>{}<< ",
-                            match target_language {
-                                Some(value) => value.get_iso_639_1_code(),
+                            match target_language.and_then(|l| l.get_iso_639_1_code()) {
+                                Some(value) => value,
                                 None => {
                                     return Err(RustBertError::ValueError(format!(
                                         "Missing target language for Marian \
@@ -645,23 +996,24 @@ impl TranslationOption {
             Self::MBart(ref model) => (
                 Some(format!(
                     ">>{}<< ",
-                    match source_language {
-                        Some(value) => value.get_iso_639_1_code(),
-                        None => {
-                            return Err(RustBertError::ValueError(format!(
-                                "Missing source language for MBart\
+                    source_language
+                        .and_then(|l| l.get_iso_639_1_code())
+                        .ok_or_else(|| RustBertError::ValueError(format!(
+                            "Missing source language for MBart\
                                 (multiple languages supported by model: {:?}, \
                                 need to specify target language)",
-                                supported_source_languages
-                            )));
-                        }
-                    }
+                            supported_source_languages
+                        )))?
                 )),
                 if let Some(target_language) = target_language {
                     Some(
                         model._get_tokenizer().convert_tokens_to_ids(&[format!(
                             ">>{}<<",
-                            target_language.get_iso_639_1_code()
+                            target_language.get_iso_639_1_code().ok_or_else(|| {
+                                RustBertError::ValueError(format!(
+                                    "This language has no ISO639-I code. Languages supported by model: {supported_source_languages:?}."
+                                ))
+                            })?
                         )])[0],
                     )
                 } else {
