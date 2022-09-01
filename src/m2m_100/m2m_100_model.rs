@@ -643,6 +643,7 @@ impl M2M100Generator {
         let mut var_store = nn::VarStore::new(device);
 
         let config = M2M100Config::from_file(config_path);
+
         let model = M2M100ForConditionalGeneration::new(&var_store.root(), &config);
         var_store.load(weights_path)?;
 

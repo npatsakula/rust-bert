@@ -15,7 +15,8 @@ use crate::common::error::RustBertError;
 use crate::m2m_100::M2M100Generator;
 use crate::marian::MarianGenerator;
 use crate::mbart::MBartGenerator;
-use crate::pipelines::common::ModelType;
+use crate::nllb::NLLBGenerator;
+use crate::pipelines::common::{ModelType, TokenizerOption};
 use crate::pipelines::generation_utils::private_generation_utils::PrivateLanguageGenerator;
 use crate::pipelines::generation_utils::{GenerateConfig, GenerateOptions, LanguageGenerator};
 use crate::resources::ResourceProvider;
@@ -495,6 +496,16 @@ impl Language {
         Some(code)
     }
 
+    pub fn get_nllb_code(&self) -> &'static str {
+        match self {
+            Language::English => "eng_Latn",
+            Language::French => "fra_Latn",
+            Language::Spanish => "spa_Latn",
+            Language::Hindi => "hin_Deva",
+            _ => unimplemented!(),
+        }
+    }
+
     pub fn get_iso_639_3_code(&self) -> &'static str {
         match self {
             Language::Afrikaans => "afr",
@@ -809,17 +820,20 @@ impl TranslationConfig {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn new<R, S, T>(
+    pub fn new<M, C, V, R, S, T>(
         model_type: ModelType,
-        model_resource: R,
-        config_resource: R,
-        vocab_resource: R,
+        model_resource: M,
+        config_resource: C,
+        vocab_resource: V,
         merges_resource: R,
         source_languages: S,
         target_languages: T,
         device: impl Into<Option<Device>>,
     ) -> TranslationConfig
     where
+        M: ResourceProvider + Send + 'static,
+        C: ResourceProvider + Send + 'static,
+        V: ResourceProvider + Send + 'static,
         R: ResourceProvider + Send + 'static,
         S: AsRef<[Language]>,
         T: AsRef<[Language]>,
@@ -890,6 +904,7 @@ pub enum TranslationOption {
     MBart(MBartGenerator),
     /// Translator based on M2M100 model
     M2M100(M2M100Generator),
+    NLLB(NLLBGenerator),
 }
 
 impl TranslationOption {
@@ -905,6 +920,21 @@ impl TranslationOption {
             ModelType::M2M100 => Ok(TranslationOption::M2M100(M2M100Generator::new(
                 config.into(),
             )?)),
+            ModelType::NLLB => {
+                let config: GenerateConfig = config.into();
+                let tokenizer = TokenizerOption::from_file(
+                    ModelType::NLLB,
+                    config.vocab_resource.get_local_path()?.to_str().unwrap(),
+                    Some(config.merges_resource.get_local_path()?.to_str().unwrap()),
+                    false,
+                    None,
+                    None,
+                )?;
+
+                Ok(TranslationOption::NLLB(NLLBGenerator::new_with_tokenizer(
+                    config, tokenizer,
+                )?))
+            }
             _ => Err(RustBertError::InvalidConfigurationError(format!(
                 "Translation not implemented for {:?}!",
                 config.model_type
@@ -919,6 +949,7 @@ impl TranslationOption {
             Self::T5(_) => ModelType::T5,
             Self::MBart(_) => ModelType::MBart,
             Self::M2M100(_) => ModelType::M2M100,
+            Self::NLLB(_) => ModelType::NLLB,
         }
     }
 
@@ -1028,13 +1059,18 @@ impl TranslationOption {
             Self::M2M100(ref model) => (
                 Some(match source_language {
                     Some(value) => {
-                        let language_code = value.get_iso_639_1_code();
+                        let language_code = value.get_iso_639_1_code().ok_or_else(|| {
+                            RustBertError::ValueError(format!(
+                                "This language has no ISO639-I language code representation. \
+                                languages supported by the model: {supported_target_languages:?}"
+                            ))
+                        })?;
                         match language_code.len() {
                             2 => format!(">>{}.<< ", language_code),
                             3 => format!(">>{}<< ", language_code),
                             _ => {
                                 return Err(RustBertError::ValueError(
-                                    "Invalid ISO 639-3 code".to_string(),
+                                    "Invalid ISO 639-I code".to_string(),
                                 ));
                             }
                         }
@@ -1049,7 +1085,12 @@ impl TranslationOption {
                     }
                 }),
                 if let Some(target_language) = target_language {
-                    let language_code = target_language.get_iso_639_1_code();
+                    let language_code = target_language.get_iso_639_1_code().ok_or_else(|| {
+                        RustBertError::ValueError(format!(
+                            "This language has no ISO639-I language code representation. \
+                            languages supported by the model: {supported_target_languages:?}"
+                        ))
+                    })?;
                     Some(
                         model._get_tokenizer().convert_tokens_to_ids(&[
                             match language_code.len() {
@@ -1072,6 +1113,24 @@ impl TranslationOption {
                     )));
                 },
             ),
+            Self::NLLB(ref model) => {
+                let source_language = source_language
+                    .map(Language::get_nllb_code)
+                    .map(|code| code.to_string())
+                    .ok_or_else(|| RustBertError::ValueError(
+                        format!("Missing source language for NLLB. Need to specify one from: {supported_source_languages:?}")
+                ))?;
+
+                let target_language = target_language
+                    .map(Language::get_nllb_code)
+                    .map(|code| code.to_string())
+                    .map(|code| model._get_tokenizer().convert_tokens_to_ids(&[code])[0])
+                    .ok_or_else(|| RustBertError::ValueError(
+                        format!("Missing target language for NLLB. Need to specify one from: {supported_target_languages:?}")
+                ))?;
+
+                (Some(source_language), Some(target_language))
+            }
         })
     }
 
@@ -1106,7 +1165,7 @@ impl TranslationOption {
                     .map(|output| output.text)
                     .collect()
             }
-            Self::M2M100(ref model) => {
+            Self::M2M100(ref model) | Self::NLLB(ref model) => {
                 let generate_options = GenerateOptions {
                     forced_bos_token_id,
                     ..Default::default()

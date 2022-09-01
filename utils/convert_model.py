@@ -42,5 +42,5 @@ if __name__ == "__main__":
 
     toml_location = (Path(__file__).resolve() / '..' / '..' / 'Cargo.toml').resolve()
     subprocess.run(
-        ['cargo', 'run', '--bin=convert-tensor', '--manifest-path=%s' % toml_location, '--', source, target],
+        ['cargo', 'run', '--release', '--bin=convert-tensor', '--manifest-path=%s' % toml_location, '--', source, target],
     )
