@@ -74,7 +74,7 @@ fn nllb_translation() -> anyhow::Result<()> {
     let config_resource = RemoteResource::from_pretrained(NLLBConfigResources::NLLB_600M_DISTILLED);
     let vocab_resource = RemoteResource::from_pretrained(NLLBVocabResources::NLLB_600M_DISTILLED);
     let merges_resource = RemoteResource::from_pretrained(NLLBMergeResources::NLLB_600M_DISTILLED);
-    let special_map = RemoteResource::from_pretrained(NLLBSpecialMap::NLLB_600M_DISTILLED);
+    // let special_map = RemoteResource::from_pretrained(NLLBSpecialMap::NLLB_600M_DISTILLED);
 
     let source_languages = NLLBLanguages::NLLB_600M_DISTILLED;
     let target_languages = NLLBLanguages::NLLB_600M_DISTILLED;

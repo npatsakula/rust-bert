@@ -37,10 +37,8 @@ pub enum Language {
     Afrikaans,             // afr af
     SouthLevantineArabic,  // ajp
     Akan,                  // aka ak
-    ToskAlbanian,          // als
     Amharic,               // amh am
     NorthLevantineArabic,  // apc
-    StandardArabic,        // arb
     NajdiArabic,           // ars
     MoroccanArabic,        // ary
     EgyptianArabic,        // arz
@@ -139,7 +137,6 @@ pub enum Language {
     Ganda,                 // lug lg
     Luo,                   // luo
     Lushai,                // lus
-    StandardLatvian,       // lvs
     Magahi,                // mag
     Maithili,              // mai
     Malayalam,             // mal ml
@@ -225,7 +222,6 @@ pub enum Language {
     Yoruba,                // yor yo
     YueChinese,            // yue
     Chinese,               // zho zh
-    StandardMalay,         // zsm
     Zulu,                  // zul zu
     WesternFrisian,        // fy
     Arabic,                // ara ar
@@ -309,9 +305,7 @@ impl Language {
             Language::Estonian => "et",
             Language::Finnish => "fi",
             Language::Hungarian => "hu",
-            Language::StandardLatvian => "lv",
             Language::Lithuanian => "lt",
-            Language::ToskAlbanian => "sq",
             Language::Armenian => "hy",
             Language::Georgian => "ka",
             Language::Greek => "el",
@@ -347,7 +341,7 @@ impl Language {
             Language::Javanese => "jv",
             Language::Malagasy => "mg",
             Language::PlateauMalagasy => return None,
-            Language::Malay => "ms",
+            Language::Malay => "zsm_Latn",
             Language::Malayalam => "ml",
             Language::Sundanese => "su",
             Language::Tagalog => "tl",
@@ -386,7 +380,6 @@ impl Language {
             Language::SouthLevantineArabic => return None,
             Language::Akan => "ak",
             Language::NorthLevantineArabic => return None,
-            Language::StandardArabic => return None,
             Language::MoroccanArabic => return None,
             Language::EgyptianArabic => return None,
             Language::Assamese => "as",
@@ -484,7 +477,6 @@ impl Language {
             Language::Waray => return None,
             Language::EasternYiddish => return None,
             Language::YueChinese => return None,
-            Language::StandardMalay => return None,
             Language::Arabic => "ar",
             Language::Albanian => "sq",
             Language::Azerbaijani => "az",
@@ -496,14 +488,224 @@ impl Language {
         Some(code)
     }
 
-    pub fn get_nllb_code(&self) -> &'static str {
-        match self {
+    pub fn get_nllb_code(&self) -> Option<&'static str> {
+        let result = match self {
+            Self::Nepali
+            | Self::ChineseMandarin
+            | Self::Breton
+            | Self::Norwegian
+            | Self::Malagasy
+            | Self::Azerbaijani
+            | Self::WesternFrisian
+            | Self::Pashto
+            | Self::Farsi
+            | Self::Fulah
+            | Self::Mongolian
+            | Self::Yiddish => return None,
+
+            Language::Afrikaans => "afr_Latn",
+            Language::Danish => "dan_Latn",
+            Language::Dutch => "nld_Latn",
+            Language::German => "deu_Latn",
             Language::English => "eng_Latn",
+            Language::Icelandic => "isl_Latn",
+            Language::Luxembourgish => "ltz_Latn",
+            Language::Swedish => "swe_Latn",
+            Language::Asturian => "ast_Latn",
+            Language::Catalan => "cat_Latn",
             Language::French => "fra_Latn",
+            Language::Galician => "glg_Latn",
+            Language::Italian => "ita_Latn",
+            Language::Occitan => "oci_Latn",
+            Language::Portuguese => "por_Latn",
+            Language::Romanian => "ron_Latn",
             Language::Spanish => "spa_Latn",
+            Language::Belarusian => "bel_Cyrl",
+            Language::Bosnian => "bos_Latn",
+            Language::Bulgarian => "bul_Cyrl",
+            Language::Croatian => "hrv_Latn",
+            Language::Czech => "ces_Latn",
+            Language::Macedonian => "mkd_Cyrl",
+            Language::Polish => "pol_Latn",
+            Language::Russian => "rus_Cyrl",
+            Language::Serbian => "srp_Cyrl",
+            Language::Slovak => "slk_Latn",
+            Language::Slovenian => "slv_Latn",
+            Language::Ukrainian => "ukr_Cyrl",
+            Language::Estonian => "est_Latn",
+            Language::Finnish => "fin_Latn",
+            Language::Hungarian => "hun_Latn",
+            Language::Latvian => "lvs_Latn",
+            Language::Lithuanian => "lit_Latn",
+            Language::Albanian => "als_Latn",
+            Language::Armenian => "hye_Armn",
+            Language::Georgian => "kat_Geor",
+            Language::Greek => "ell_Grek",
+            Language::Irish => "gle_Latn",
+            Language::ScottishGaelic => "gla_Latn",
+            Language::Welsh => "cym_Latn",
+            Language::Bashkir => "bak_Cyrl",
+            Language::Kazakh => "kaz_Cyrl",
+            Language::Turkish => "tur_Latn",
+            Language::Uzbek => "uzn_Latn",
+            Language::Japanese => "jpn_Jpan",
+            Language::Korean => "kor_Hang",
+            Language::Vietnamese => "vie_Latn",
+            Language::Bengali => "ben_Beng",
+            Language::Gujarati => "guj_Gujr",
             Language::Hindi => "hin_Deva",
-            _ => unimplemented!(),
-        }
+            Language::Kannada => "kan_Knda",
+            Language::Marathi => "mar_Deva",
+            Language::Oriya => "ory_Orya",
+            Language::Panjabi => "pan_Guru",
+            Language::Sindhi => "snd_Arab",
+            Language::Sinhala => "sin_Sinh",
+            Language::Urdu => "urd_Arab",
+            Language::Tamil => "tam_Taml",
+            Language::Cebuano => "ceb_Latn",
+            Language::Iloko => "ilo_Latn",
+            Language::Indonesian => "ind_Latn",
+            Language::Javanese => "jav_Latn",
+            Language::Malay => "zsm_Latn",
+            Language::Malayalam => "mal_Mlym",
+            Language::Sundanese => "sun_Latn",
+            Language::Tagalog => "tgl_Latn",
+            Language::Burmese => "mya_Mymr",
+            Language::CentralKhmer => "khm_Khmr",
+            Language::Lao => "lao_Laoo",
+            Language::Thai => "tha_Thai",
+            Language::Hebrew => "heb_Hebr",
+            Language::Amharic => "amh_Ethi",
+            Language::Hausa => "hau_Latn",
+            Language::Igbo => "ibo_Latn",
+            Language::Lingala => "lin_Latn",
+            Language::Luganda => "lug_Latn",
+            Language::NorthernSotho => "nso_Latn",
+            Language::Somali => "som_Latn",
+            Language::Swahili => "swh_Latn",
+            Language::Swati => "ssw_Latn",
+            Language::Tswana => "tsn_Latn",
+            Language::Wolof => "wol_Latn",
+            Language::Xhosa => "xho_Latn",
+            Language::Yoruba => "yor_Latn",
+            Language::Zulu => "zul_Latn",
+            Language::HaitianCreole => "hat_Latn",
+            Language::Achinese => "ace_Arab",
+            Language::MesopotamianArabic => "acm_Arab",
+            Language::TaizziAdeniArabic => "acq_Arab",
+            Language::TunisianArabic => "aeb_Arab",
+            Language::SouthLevantineArabic => "ajp_Arab",
+            Language::Akan => "aka_Latn",
+            Language::NorthLevantineArabic => "apc_Arab",
+            Language::Arabic => "arb_Arab",
+            Language::NajdiArabic => "ars_Arab",
+            Language::MoroccanArabic => "ary_Arab",
+            Language::EgyptianArabic => "arz_Arab",
+            Language::Assamese => "asm_Beng",
+            Language::Awadhi => "awa_Deva",
+            Language::CentralAymara => "ayr_Latn",
+            Language::SouthAzerbaijani => "azb_Arab",
+            Language::NorthAzerbaijani => "azj_Latn",
+            Language::Bambara => "bam_Latn",
+            Language::Balinese => "ban_Latn",
+            Language::Bemba => "bem_Latn",
+            Language::Bhojpuri => "bho_Deva",
+            Language::Banjar => "bjn_Arab",
+            Language::Tibetan => "bod_Tibt",
+            Language::Buginese => "bug_Latn",
+            Language::Chokwe => "cjk_Latn",
+            Language::CentralKurdish => "ckb_Arab",
+            Language::CrimeanTatar => "crh_Latn",
+            Language::SouthwesternDinka => "dik_Latn",
+            Language::Dyula => "dyu_Latn",
+            Language::Dzongkha => "dzo_Tibt",
+            Language::Esperanto => "epo_Latn",
+            Language::Basque => "eus_Latn",
+            Language::Ewe => "ewe_Latn",
+            Language::Faroese => "fao_Latn",
+            Language::Fijian => "fij_Latn",
+            Language::Fon => "fon_Latn",
+            Language::Friulian => "fur_Latn",
+            Language::NigerianFulfulde => "fuv_Latn",
+            Language::WestCentralOromo => "gaz_Latn",
+            Language::Guarani => "grn_Latn",
+            Language::Haitian => "hat_Latn",
+            Language::Chhattisgarhi => "hne_Deva",
+            Language::Kabyle => "kab_Latn",
+            Language::Kachin => "kac_Latn",
+            Language::Kamba => "kam_Latn",
+            Language::Kashmiri => "kas_Arab",
+            Language::Kabiye => "kbp_Latn",
+            Language::Kabuverdianu => "kea_Latn",
+            Language::HalhMongolian => "khk_Cyrl",
+            Language::Khmer => "khm_Khmr",
+            Language::Kikuyu => "kik_Latn",
+            Language::Kinyarwanda => "kin_Latn",
+            Language::Kirghiz => "kir_Cyrl",
+            Language::Kimbundu => "kmb_Latn",
+            Language::NorthernKurdish => "kmr_Latn",
+            Language::CentralKanuri => "knc_Latn",
+            Language::Kongo => "kon_Latn",
+            Language::Ligurian => "lij_Latn",
+            Language::Limburgan => "lim_Latn",
+            Language::Lombard => "lmo_Latn",
+            Language::Latgalian => "ltg_Latn",
+            Language::LubaLulua => "lua_Latn",
+            Language::Ganda => "lug_Latn",
+            Language::Luo => "luo_Latn",
+            Language::Lushai => "lus_Latn",
+            Language::Magahi => "mag_Deva",
+            Language::Maithili => "mai_Deva",
+            Language::Minangkabau => "min_Latn",
+            Language::Maltese => "mlt_Latn",
+            Language::Manipuri => "mni_Beng",
+            Language::Mossi => "mos_Latn",
+            Language::Maori => "mri_Latn",
+            Language::NorwegianNynorsk => "nno_Latn",
+            Language::NorwegianBokmal => "nob_Latn",
+            Language::Pedi => "nso_Latn",
+            Language::Nuer => "nus_Latn",
+            Language::Nyanja => "nya_Latn",
+            Language::Odia => "ory_Orya",
+            Language::Pangasinan => "pag_Latn",
+            Language::Papiamento => "pap_Latn",
+            Language::SouthernPashto => "pbt_Arab",
+            Language::IranianPersian => "pes_Arab",
+            Language::PlateauMalagasy => "plt_Latn",
+            Language::Dari => "prs_Arab",
+            Language::AyacuchoQuechua => "quy_Latn",
+            Language::Rundi => "run_Latn",
+            Language::Sango => "sag_Latn",
+            Language::Sanskrit => "san_Deva",
+            Language::Santali => "sat_Beng",
+            Language::Sicilian => "scn_Latn",
+            Language::Shan => "shn_Mymr",
+            Language::Samoan => "smo_Latn",
+            Language::Shona => "sna_Latn",
+            Language::SouthernSotho => "sot_Latn",
+            Language::Sardinian => "srd_Latn",
+            Language::Silesian => "szl_Latn",
+            Language::Tamasheq => "taq_Latn",
+            Language::Tatar => "tat_Cyrl",
+            Language::Telugu => "tel_Telu",
+            Language::Tajik => "tgk_Cyrl",
+            Language::Tigrinya => "tir_Ethi",
+            Language::TokPisin => "tpi_Latn",
+            Language::Tsonga => "tso_Latn",
+            Language::Turkmen => "tuk_Latn",
+            Language::Tumbuka => "tum_Latn",
+            Language::Twi => "twi_Latn",
+            Language::CentralAtlasTamazight => "tzm_Tfng",
+            Language::Uighur => "uig_Arab",
+            Language::Umbundu => "umb_Latn",
+            Language::NorthernUzbek => "uzn_Latn",
+            Language::Venetian => "vec_Latn",
+            Language::Waray => "war_Latn",
+            Language::EasternYiddish => "ydd_Hebr",
+            Language::YueChinese => "yue_Hant",
+            Language::Chinese => "zho_Hans",
+        };
+        Some(result)
     }
 
     pub fn get_iso_639_3_code(&self) -> &'static str {
@@ -544,10 +746,8 @@ impl Language {
             Language::Finnish => "fin",
             Language::Hungarian => "hun",
             Language::Latvian => "lav",
-            Language::StandardLatvian => "lvs",
             Language::Lithuanian => "lit",
             Language::Albanian => "sqi",
-            Language::ToskAlbanian => "als",
             Language::Armenian => "hye",
             Language::Georgian => "kat",
             Language::Greek => "ell",
@@ -617,7 +817,6 @@ impl Language {
             Language::SouthLevantineArabic => "ajp",
             Language::Akan => "aka",
             Language::NorthLevantineArabic => "apc",
-            Language::StandardArabic => "arb",
             Language::NajdiArabic => "ars",
             Language::MoroccanArabic => "ary",
             Language::EgyptianArabic => "arz",
@@ -724,7 +923,6 @@ impl Language {
             Language::EasternYiddish => "ydd",
             Language::YueChinese => "yue",
             Language::Chinese => "zho",
-            Language::StandardMalay => "zsm",
         }
     }
 }
@@ -1116,14 +1314,14 @@ impl TranslationOption {
             Self::NLLB(ref model) => {
                 let source_language = source_language
                     .map(Language::get_nllb_code)
-                    .map(|code| code.to_string())
+                    .and_then(|code| code.map(str::to_string))
                     .ok_or_else(|| RustBertError::ValueError(
                         format!("Missing source language for NLLB. Need to specify one from: {supported_source_languages:?}")
                 ))?;
 
                 let target_language = target_language
                     .map(Language::get_nllb_code)
-                    .map(|code| code.to_string())
+                    .and_then(|code| code.map(str::to_string))
                     .map(|code| model._get_tokenizer().convert_tokens_to_ids(&[code])[0])
                     .ok_or_else(|| RustBertError::ValueError(
                         format!("Missing target language for NLLB. Need to specify one from: {supported_target_languages:?}")
