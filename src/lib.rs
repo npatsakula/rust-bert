@@ -563,7 +563,8 @@
 //!         "each sentence is converted"
 //!     ];
 //!     
-//!     let output = model.predict(&sentences);
+//!     let output = model.encode_as_tensor(&sentences);
+//!     Ok(())
 //! # }
 //! ```
 //! Output:
@@ -641,6 +642,7 @@ pub mod m2m_100;
 pub mod marian;
 pub mod mbart;
 pub mod mobilebert;
+pub mod nllb;
 pub mod openai_gpt;
 pub mod pegasus;
 pub mod pipelines;
