@@ -438,6 +438,7 @@
 //! ]
 //! # ;
 //! ```
+#![allow(clippy::type_complexity)]
 
 pub mod common;
 pub mod conversation;

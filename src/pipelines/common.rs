@@ -45,12 +45,12 @@ use rust_tokenizers::tokenizer::{
     Gpt2Tokenizer, M2M100Tokenizer, MBart50Tokenizer, MarianTokenizer, MultiThreadedTokenizer,
     NLLBTokenizer, OpenAiGptTokenizer, PegasusTokenizer, ProphetNetTokenizer, ReformerTokenizer,
     RobertaTokenizer, T5Tokenizer, Tokenizer, TruncationStrategy, XLMRobertaTokenizer,
-    XLNetTokenizer,
+    XLNetTokenizer, 
 };
 use rust_tokenizers::vocab::{
     AlbertVocab, BertVocab, DeBERTaV2Vocab, DeBERTaVocab, FNetVocab, Gpt2Vocab, M2M100Vocab,
     MBart50Vocab, MarianVocab, OpenAiGptVocab, PegasusVocab, ProphetNetVocab, ReformerVocab,
-    RobertaVocab, T5Vocab, Vocab, XLMRobertaVocab, XLNetVocab,
+    RobertaVocab, T5Vocab, Vocab, XLMRobertaVocab, XLNetVocab, NLLBVocab,
 };
 use rust_tokenizers::{TokenIdsWithOffsets, TokenizedInput, TokensWithOffsets};
 use serde::{Deserialize, Serialize};
@@ -58,7 +58,7 @@ use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::path::Path;
 
-#[derive(Clone, Copy, Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Clone, Copy, Serialize, Deserialize, Debug, Eq, PartialEq)]
 /// # Identifies the type of model
 pub enum ModelType {
     Bart,
@@ -94,6 +94,7 @@ pub enum ModelType {
 }
 
 /// # Abstraction that holds a model configuration, can be of any of the supported models
+#[enum_dispatch::enum_dispatch(Tokenizer)]
 pub enum ConfigOption {
     /// Bart configuration
     Bart(BartConfig),
@@ -142,6 +143,7 @@ pub enum ConfigOption {
 }
 
 /// # Abstraction that holds a particular tokenizer, can be of any of the supported models
+#[enum_dispatch::enum_dispatch(Tokenizer)]
 pub enum TokenizerOption {
     /// Bert Tokenizer
     Bert(BertTokenizer),
@@ -1332,79 +1334,79 @@ impl TokenizerOption {
         match *self {
             Self::Bert(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(BertVocab::unknown_value())
+                .get(BertVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::Deberta(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(DeBERTaVocab::unknown_value())
+                .get(DeBERTaVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::DebertaV2(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(DeBERTaV2Vocab::unknown_value())
+                .get(DeBERTaV2Vocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::Roberta(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(RobertaVocab::unknown_value())
+                .get(RobertaVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::Bart(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(RobertaVocab::unknown_value())
+                .get(RobertaVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::XLMRoberta(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(XLMRobertaVocab::unknown_value())
+                .get(XLMRobertaVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::Marian(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(MarianVocab::unknown_value())
+                .get(MarianVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::T5(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(T5Vocab::unknown_value())
+                .get(T5Vocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::Albert(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(AlbertVocab::unknown_value())
+                .get(AlbertVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::XLNet(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(XLNetVocab::unknown_value())
+                .get(XLNetVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::GPT2(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(Gpt2Vocab::unknown_value())
+                .get(Gpt2Vocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::OpenAiGpt(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(OpenAiGptVocab::unknown_value())
+                .get(OpenAiGptVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::Reformer(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(ReformerVocab::unknown_value())
+                .get(ReformerVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::ProphetNet(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(ProphetNetVocab::unknown_value())
+                .get(ProphetNetVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::Pegasus(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(PegasusVocab::unknown_value())
+                .get(PegasusVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::MBart50(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(MBart50Vocab::unknown_value())
+                .get(MBart50Vocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::M2M100(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(M2M100Vocab::unknown_value())
+                .get(M2M100Vocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::NLLB(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(M2M100Vocab::unknown_value())
+                .get(NLLBVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
             Self::FNet(ref tokenizer) => *MultiThreadedTokenizer::vocab(tokenizer)
                 .special_values
-                .get(FNetVocab::unknown_value())
+                .get(FNetVocab::get_unknown_value(Tokenizer::vocab(tokenizer)))
                 .expect("UNK token not found in vocabulary"),
         }
     }
@@ -1415,97 +1417,97 @@ impl TokenizerOption {
             Self::Bert(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(BertVocab::pad_value())
+                    .get(BertVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::Deberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(DeBERTaVocab::pad_value())
+                    .get(DeBERTaVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::DebertaV2(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(DeBERTaV2Vocab::pad_value())
+                    .get(DeBERTaV2Vocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::Roberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(RobertaVocab::pad_value())
+                    .get(RobertaVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::Bart(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(RobertaVocab::pad_value())
+                    .get(RobertaVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&1),
             ),
             Self::XLMRoberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(XLMRobertaVocab::pad_value())
+                    .get(XLMRobertaVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::Marian(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(MarianVocab::pad_value())
+                    .get(MarianVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::T5(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(T5Vocab::pad_value())
+                    .get(T5Vocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::Albert(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(AlbertVocab::pad_value())
+                    .get(AlbertVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::XLNet(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(XLNetVocab::pad_value())
+                    .get(XLNetVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::ProphetNet(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(ProphetNetVocab::pad_value())
+                    .get(ProphetNetVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::Pegasus(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(PegasusVocab::pad_value())
+                    .get(PegasusVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&0),
             ),
             Self::MBart50(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(MBart50Vocab::pad_value())
+                    .get(MBart50Vocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::M2M100(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(M2M100Vocab::pad_value())
+                    .get(M2M100Vocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&1),
             ),
             Self::NLLB(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(M2M100Vocab::pad_value())
+                    .get(NLLBVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&1),
             ),
             Self::FNet(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(FNetVocab::pad_value())
+                    .get(FNetVocab::get_pad_value(Tokenizer::vocab(tokenizer)))
                     .expect("PAD token not found in vocabulary"),
             ),
             Self::Reformer(_) => None,
@@ -1520,79 +1522,79 @@ impl TokenizerOption {
             Self::Bert(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(BertVocab::sep_value())
+                    .get(BertVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::Deberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(DeBERTaVocab::sep_value())
+                    .get(DeBERTaVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::DebertaV2(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(DeBERTaV2Vocab::sep_value())
+                    .get(DeBERTaV2Vocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::Roberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(RobertaVocab::sep_value())
+                    .get(RobertaVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::Bart(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(RobertaVocab::sep_value())
+                    .get(RobertaVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::XLMRoberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(XLMRobertaVocab::sep_value())
+                    .get(XLMRobertaVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::Albert(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(AlbertVocab::sep_value())
+                    .get(AlbertVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::XLNet(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(XLNetVocab::sep_value())
+                    .get(XLNetVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::ProphetNet(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(ProphetNetVocab::sep_value())
+                    .get(ProphetNetVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::MBart50(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(MBart50Vocab::sep_value())
+                    .get(MBart50Vocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&1),
             ),
             Self::M2M100(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(M2M100Vocab::sep_value())
+                    .get(M2M100Vocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::NLLB(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(M2M100Vocab::sep_value())
+                    .get(NLLBVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::FNet(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(FNetVocab::sep_value())
+                    .get(FNetVocab::get_sep_value(Tokenizer::vocab(tokenizer)))
                     .expect("SEP token not found in vocabulary"),
             ),
             Self::Marian(_) => None,
@@ -1610,61 +1612,61 @@ impl TokenizerOption {
             Self::Roberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(RobertaVocab::bos_value())
+                    .get(RobertaVocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .expect("BOS token not found in vocabulary"),
             ),
             Self::Bart(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(RobertaVocab::bos_value())
+                    .get(RobertaVocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&0),
             ),
             Self::DebertaV2(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(DeBERTaV2Vocab::bos_value())
+                    .get(DeBERTaV2Vocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .expect("BOS token not found in vocabulary"),
             ),
             Self::XLMRoberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(XLMRobertaVocab::bos_value())
+                    .get(XLMRobertaVocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .expect("BOS token not found in vocabulary"),
             ),
             Self::Albert(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(AlbertVocab::bos_value())
+                    .get(AlbertVocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .expect("BOS token not found in vocabulary"),
             ),
             Self::XLNet(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(XLNetVocab::bos_value())
+                    .get(XLNetVocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .expect("BOS token not found in vocabulary"),
             ),
             Self::M2M100(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(M2M100Vocab::bos_value())
+                    .get(M2M100Vocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&0),
             ),
             Self::NLLB(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(M2M100Vocab::bos_value())
+                    .get(NLLBVocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&0),
             ),
             Self::GPT2(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(Gpt2Vocab::bos_value())
+                    .get(Gpt2Vocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .expect("BOS token not found in vocabulary"),
             ),
             Self::Deberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(DeBERTaVocab::bos_value())
+                    .get(DeBERTaVocab::get_bos_value(Tokenizer::vocab(tokenizer)))
                     .expect("BOS token not found in vocabulary"),
             ),
             Self::MBart50(_) => Some(0),
@@ -1685,97 +1687,132 @@ impl TokenizerOption {
             Self::Roberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(RobertaVocab::eos_value())
+                    .get(RobertaVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::Bart(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(RobertaVocab::eos_value())
+                    .get(RobertaVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&2),
             ),
             Self::DebertaV2(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(DeBERTaV2Vocab::eos_value())
+                    .get(DeBERTaV2Vocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::XLMRoberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(XLMRobertaVocab::eos_value())
+                    .get(XLMRobertaVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::Albert(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(AlbertVocab::eos_value())
+                    .get(AlbertVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::XLNet(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(XLNetVocab::eos_value())
+                    .get(XLNetVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::MBart50(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(MBart50Vocab::eos_value())
+                    .get(MBart50Vocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&2),
             ),
             Self::M2M100(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(M2M100Vocab::eos_value())
+                    .get(M2M100Vocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::NLLB(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(M2M100Vocab::eos_value())
+                    .get(NLLBVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::GPT2(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(Gpt2Vocab::eos_value())
+                    .get(Gpt2Vocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&2),
             ),
             Self::Deberta(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(DeBERTaVocab::eos_value())
+                    .get(DeBERTaVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::Marian(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(MarianVocab::eos_value())
+                    .get(MarianVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::T5(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(T5Vocab::eos_value())
+                    .get(T5Vocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::Reformer(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(ReformerVocab::eos_value())
+                    .get(ReformerVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .expect("EOS token not found in vocabulary"),
             ),
             Self::Pegasus(ref tokenizer) => Some(
                 *MultiThreadedTokenizer::vocab(tokenizer)
                     .special_values
-                    .get(PegasusVocab::eos_value())
+                    .get(PegasusVocab::get_eos_value(Tokenizer::vocab(tokenizer)))
                     .unwrap_or(&1),
             ),
             Self::FNet(_) => None,
             Self::Bert(_) => None,
             Self::ProphetNet(_) => None,
             Self::OpenAiGpt(_) => None,
+        }
+    }
+
+    pub(crate) fn m2m100(&self) -> Option<&M2M100Tokenizer> {
+        match self {
+            Self::M2M100(inner) => Some(inner),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn pegasus(&self) -> Option<&PegasusTokenizer> {
+        match self {
+            Self::Pegasus(inner) => Some(inner),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn prophetnet(&self) -> Option<&ProphetNetTokenizer> {
+        match self {
+            Self::ProphetNet(inner) => Some(inner),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn roberta(&self) -> Option<&RobertaTokenizer> {
+        match self {
+            Self::Roberta(inner) | Self::Bart(inner) => Some(inner),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn marian(&self) -> Option<&MarianTokenizer> {
+        match self {
+            Self::Marian(inner) => Some(inner),
+            _ => None,
         }
     }
 }

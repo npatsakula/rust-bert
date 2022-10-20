@@ -545,9 +545,9 @@ impl XLNetModel {
 
         let mut output_h = word_emb_k.apply_t(&self.dropout, train);
         let mut output_g = target_mapping.as_ref().map(|target_mapping_value| {
-            (&self
+            self
                 .mask_emb
-                .expand(&[target_mapping_value.size()[0], batch_size, -1], true))
+                .expand(&[target_mapping_value.size()[0], batch_size, -1], true)
                 .apply_t(&self.dropout, train)
         });
 

@@ -24,7 +24,7 @@ use crate::pipelines::generation_utils::{
     Cache, GenerateConfig, LMHeadModel, LMModelOutput, LanguageGenerator,
 };
 use crate::{Config, RustBertError};
-use rust_tokenizers::tokenizer::{PegasusTokenizer, TruncationStrategy};
+use rust_tokenizers::tokenizer::{PegasusTokenizer, Tokenizer, TruncationStrategy};
 use rust_tokenizers::vocab::PegasusVocab;
 use std::borrow::Borrow;
 use tch::nn::{embedding, EmbeddingConfig, Init};
@@ -774,9 +774,12 @@ impl PrivateLanguageGenerator<PegasusForConditionalGeneration, PegasusVocab, Peg
 
         let pad_token = match pad_token_id {
             Some(value) => value,
-            None => self
-                ._get_tokenizer()
-                .convert_tokens_to_ids(&[PegasusVocab::pad_value()])[0],
+            None => self._get_tokenizer().convert_tokens_to_ids(&[self
+                .tokenizer
+                .pegasus()
+                .expect("Must be Pegasus tokenizer.")
+                .vocab()
+                .get_pad_value()])[0],
         };
 
         let token_ids = token_ids

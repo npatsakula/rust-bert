@@ -21,7 +21,7 @@ use crate::pipelines::generation_utils::{
 };
 use crate::pipelines::translation::Language;
 use crate::{Config, RustBertError};
-use rust_tokenizers::tokenizer::{MarianTokenizer, TruncationStrategy};
+use rust_tokenizers::tokenizer::{MarianTokenizer, Tokenizer, TruncationStrategy};
 use rust_tokenizers::vocab::MarianVocab;
 use std::borrow::Borrow;
 use tch::nn::Init;
@@ -875,8 +875,13 @@ impl MarianGenerator {
 
         let vocab_size = config.vocab_size;
         let is_encoder_decoder = true;
-        let decoder_start_id =
-            Some(tokenizer.convert_tokens_to_ids(&[MarianVocab::pad_value()])[0]);
+        let decoder_start_id = Some(
+            tokenizer.convert_tokens_to_ids(&[tokenizer
+                .marian()
+                .expect("Must be Marian tokenizer")
+                .vocab()
+                .get_pad_value()])[0],
+        );
         let max_position_embeddings = config.max_position_embeddings;
 
         Ok(MarianGenerator {

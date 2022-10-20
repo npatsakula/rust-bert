@@ -24,7 +24,7 @@ use crate::pipelines::generation_utils::{
 };
 use crate::pipelines::translation::Language;
 use crate::{Activation, Config, RustBertError};
-use rust_tokenizers::tokenizer::{MBart50Tokenizer, TruncationStrategy};
+use rust_tokenizers::tokenizer::{MBart50Tokenizer, Tokenizer, TruncationStrategy};
 use rust_tokenizers::vocab::{MBart50Vocab, Vocab};
 use serde::{Deserialize, Serialize};
 use std::borrow::Borrow;
@@ -1049,9 +1049,15 @@ impl PrivateLanguageGenerator<MBartForConditionalGeneration, MBart50Vocab, MBart
 
         let pad_token = match pad_token_id {
             Some(value) => value,
-            None => self
-                ._get_tokenizer()
-                .convert_tokens_to_ids(&[MBart50Vocab::unknown_value()])[0],
+            None => {
+                let options = self._get_tokenizer();
+                match options {
+                    TokenizerOption::MBart50(tokenizer) => {
+                        tokenizer.convert_tokens_to_ids(&[tokenizer.vocab().get_unknown_value()])[0]
+                    }
+                    _ => panic!("Tokenizer type mismatch. MBart tokenizer expected."),
+                }
+            }
         };
 
         let token_ids = token_ids

@@ -25,7 +25,7 @@ use crate::pipelines::generation_utils::{
     Cache, GenerateConfig, LMHeadModel, LMModelOutput, LanguageGenerator,
 };
 use crate::{Config, RustBertError};
-use rust_tokenizers::tokenizer::{RobertaTokenizer, TruncationStrategy};
+use rust_tokenizers::tokenizer::{RobertaTokenizer, TruncationStrategy, Tokenizer};
 use rust_tokenizers::vocab::{RobertaVocab, Vocab};
 use serde::{Deserialize, Serialize};
 use std::borrow::Borrow;
@@ -1245,7 +1245,7 @@ impl PrivateLanguageGenerator<BartForConditionalGeneration, RobertaVocab, Robert
             Some(value) => value,
             None => self
                 ._get_tokenizer()
-                .convert_tokens_to_ids(&[RobertaVocab::unknown_value()])[0],
+                .convert_tokens_to_ids(&[self.tokenizer.roberta().expect("Must be Roberta tokenizer.").vocab().get_unknown_value()])[0],
         };
 
         let token_ids = token_ids

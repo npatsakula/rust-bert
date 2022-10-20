@@ -13,7 +13,7 @@
 use std::borrow::Borrow;
 use std::collections::HashMap;
 
-use rust_tokenizers::tokenizer::{ProphetNetTokenizer, TruncationStrategy};
+use rust_tokenizers::tokenizer::{ProphetNetTokenizer, Tokenizer, TruncationStrategy};
 use rust_tokenizers::vocab::{ProphetNetVocab, Vocab};
 use serde::{Deserialize, Serialize};
 use tch::{nn, Kind, Tensor};
@@ -1096,9 +1096,12 @@ impl
 
         let pad_token = match pad_token_id {
             Some(value) => value,
-            None => self
-                ._get_tokenizer()
-                .convert_tokens_to_ids(&[ProphetNetVocab::unknown_value()])[0],
+            None => self._get_tokenizer().convert_tokens_to_ids(&[self
+                .tokenizer
+                .prophetnet()
+                .expect("Must be ProphetNet tokenizer.")
+                .vocab()
+                .get_unknown_value()])[0],
         };
 
         let token_ids = token_ids
